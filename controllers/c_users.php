@@ -25,6 +25,12 @@ class users_controller extends base_controller {
 		echo "<pre>";
 		print_r($_POST);
 		echo "<pre>";
+		
+		$_POST['created'] = Time::now();
+		
+		DB::instance(DB_NAME)->insert_row('users', $_POST);
+		
+		Router::redirect('/users/login');
 
     }
 
