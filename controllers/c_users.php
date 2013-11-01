@@ -27,21 +27,21 @@ class users_controller extends base_controller {
 Process the sign up form
 -------------------------------------------------------------------------------------------------*/
     
-    public function p_signup () {
+   public function p_signup () {
     
-		
-		$_POST['created']  = Time::now();
-		$_POST['password'] = sha1(PASSWORD_SALT.$_POST['PASSWORD']);
-		$_POST['token']	   = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());
-		
-		echo "<pre>";
-		print_r($_POST);
-		echo "<pre>";
-		
-		DB::instance(DB_NAME)->insert_row('users', $_POST);
-		
-		# Send them to the login page
-		//Router::redirect('/users/login');
+                
+                $_POST['created']  = Time::now();
+                $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
+                $_POST['token']           = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());
+                
+                echo "<pre>";
+                print_r($_POST);
+                echo "<pre>";
+                
+                DB::instance(DB_NAME)->insert_row('users', $_POST);
+                
+                # Send them to the login page
+                //Router::redirect('/users/login');
 
     }
 
@@ -52,7 +52,7 @@ Process the sign up form
         
     }
 
-	 /*-------------------------------------------------------------------------------------------------
+         /*-------------------------------------------------------------------------------------------------
 Process the login form
 -------------------------------------------------------------------------------------------------*/
     public function p_login() {
@@ -66,8 +66,7 @@ Process the login form
               FROM users
               WHERE email = "'.$_POST['email'].'"
               AND password = "'.$_POST['password'].'"';
-                
-        echo $q;        
+ 
                 
      # If there was, this will return the token        
         $token = DB::instance(DB_NAME)->select_field($q);
@@ -77,6 +76,7 @@ Process the login form
                 
      # Don't echo anything to the page before setting this cookie!
         setcookie('token',$token, strtotime('+1 year'), '/');
+              
         echo "Success. You are logged in!";
                         
      # Send them to the homepage
@@ -87,10 +87,6 @@ Process the login form
                         echo "Login failed! <a href='/users/login'>Try again?</a>";                }
         
     }
-
-
-
-
 
     public function logout() {
         echo "This is the logout page";
