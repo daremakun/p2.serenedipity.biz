@@ -47,4 +47,23 @@ class posts_controller extends base_controller {
                 echo $this->template;
         	
         }
+        
+        public function users() {
+                
+                # Set up view
+                $this->template->content = View::instance("v_posts_users");
+                
+                # Set up query to get all users
+                $q = 'SELECT *
+                        FROM users';
+                        
+                # Run query
+                $users = DB::instance(DB_NAME)->select_rows($q);
+                
+                # Pass data to the view
+                $this->template->content->users = $users;
+                
+                echo $this->template;
+    	}
+    
     }
