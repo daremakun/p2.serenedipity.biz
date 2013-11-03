@@ -2,12 +2,12 @@
 class users_controller extends base_controller {
 
     public function __construct() {
-        parent::__construct();
+        		parent::__construct();
  
     } 
 
     public function index() {
-        echo "This is the index page";
+        		 Router::redirect('/');
     }
 
 /*-------------------------------------------------------------------------------------------------
@@ -16,11 +16,11 @@ class users_controller extends base_controller {
 
     public function signup() {
     
-        # Set up the view
-    	$this->template->content = View::instance('v_users_signup');
+        		# Set up the view
+    			$this->template->content = View::instance('v_users_signup');
     	
-    	# Render the view
-    	echo $this->template;
+    			# Render the view
+    			echo $this->template;
     	
     }
     /*-------------------------------------------------------------------------------------------------
@@ -90,22 +90,23 @@ Process the login form
         
     }
 
+
     public function logout() {
        
-       # Generate a new token they'll use next time they login
-       $new_token = sha1(TOKEN_SALT.$this->user->email.Utils::generate_random_string());
+       			# Generate a new token they'll use next time they login
+       			$new_token = sha1(TOKEN_SALT.$this->user->email.Utils::generate_random_string());
        
-       # Update their row in the DB with the new token
-       $data = Array(
+       			# Update their row in the DB with the new token
+       			$data = Array(
                'token' => $new_token
-       );
-       DB::instance(DB_NAME)->update('users',$data, 'WHERE user_id ='. $this->user->user_id);
+       			);
+       			DB::instance(DB_NAME)->update('users',$data, 'WHERE user_id ='. $this->user->user_id);
        
-       # Delete their old token cookie by expiring it
-       setcookie('token', '', strtotime('-1 year'), '/');
+       			# Delete their old token cookie by expiring it
+       			setcookie('token', '', strtotime('-1 year'), '/');
        
-       # Send them back to the homepage
-       Router::redirect('/');
+       			# Send them back to the homepage
+       			Router::redirect('/');
        
     }
 
@@ -122,6 +123,14 @@ Process the login form
                 # Set up the View
                 $this->template->content = View::instance('v_users_profile');
                 $this->template->title = "Profile";
+                
+                $data = Array(
+                        "first_name"        => $this->user->first_name,
+                        "last_name"                => $this->user->last_name,
+                        "email"                        => $this->user->email,
+                        "created"                => $this->user->created,
+                        "modified"                => $this->user->modified
+                );
                                 
                 # Pass the data to the View
                 $this->template->content->user_name = $user_name;
