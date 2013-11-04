@@ -19,7 +19,7 @@ class posts_controller extends base_controller {
         public function p_add() {
         
         
-        }
+    
         	$_POST['user_id'] = $this->user->user_id;
             $_POST['created'] = Time::now();
             $_POST['modified'] = Time::now();
