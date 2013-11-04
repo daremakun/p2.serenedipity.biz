@@ -14,15 +14,22 @@ class users_controller extends base_controller {
         Display a form so users can sign up        
         -------------------------------------------------------------------------------------------------*/
 
-    public function signup() {
-    
-        		# Set up the view
-    			$this->template->content = View::instance('v_users_signup');
-    	
-    			# Render the view
-    			echo $this->template;
-    	
-    }
+    public function signup($error = NULL) {
+        
+                # If user exists, don't allow to use this page
+                if($this->user) {
+                        Router::redirect('/');
+                }
+                
+                # Setup view
+                $this->template->content = View::instance('v_users_signup');
+                $this->template->title = "Sign Up";
+                
+                $this->template->content->error = $error;
+                
+                # Render template
+                echo $this->template;
+        }
     /*-------------------------------------------------------------------------------------------------
 Process the sign up form
 -------------------------------------------------------------------------------------------------*/
@@ -30,38 +37,110 @@ Process the sign up form
    public function p_signup () {
     
                 
-                $_POST['created']  = Time::now();
-                $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
-                $_POST['token']    = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());
-                
-                echo "<pre>";
-                print_r($_POST);
-                echo "<pre>";
-                
-                DB::instance(DB_NAME)->insert_row('users', $_POST);
-                
-                # Send them to the login page
-                //Router::redirect('/users/login');
+                 # If user exists, don't allow to use this page
+                if($this->user) {
+                        Router::redirect('/');
+                }
+                                
+                # Build the query to look for duplicate email
+                $q = "SELECT user_id
+                                FROM users
+                                WHERE users.email = '".$_POST['email']."'";
 
-    }
+                # Run the query
+                $profile = DB::instance(DB_NAME)->select_rows($q);        
+        
+                # First check to see if there is a duplicate e-mail address already being used
+                if(!empty($profile)) {        
+        
+                # If duplicate e-mail, send error message and send them back to the signup page
+                Router::redirect("/users/signup/error_email");
+                }        
+        
+                # Don't allow blank fields in the signup form
+                if(!empty($_POST['first_name'])) {
+                        if(!empty($_POST['last_name'])) {
+                 if(!empty($_POST['email'])) {
+                 if(!empty($_POST['password'])) {                                                
+                                                                                                                                        
+                                                # More data we want stored with the user
+                                                $_POST['created'] = Time::now();
+                                                $_POST['modified'] = Time::now();
+                                
+                                                # Encrypt the password
+                                                $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
+                                
+                                                # Create an encrypted token via their email address and a random string
+                                                $_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());        
+                                                
+                                                # Sanitize the user entered data to prevent any funny-business (re: SQL Injection Attacks)
+                                                $_POST = DB::instance(DB_NAME)->sanitize($_POST);        
+                                                                                        
+                                                # Insert this user into the database
+                                                $user_id = DB::instance(DB_NAME)->insert('users', $_POST);
+                                
+                                                # Prepare data for user following himself to go into database
+                                                $data = array(
+                                                        "created" => Time::now(),
+                                                        "user_id" => $user_id,
+                                                        "user_id_followed" => $user_id
+                                                );
+                                
+                                
+                                                # Insert into users_users so the user always follows himself
+                                                DB::instance(DB_NAME)->insert('users_users', $data);
+                                
+                                                # Send them to the login page
+                                                Router::redirect("/users/login/");
+                                        }                
+                                }
+                        }
+         } else {
+        
+                 # Must be a blank field, send failed blank field message and go back to signup
+                 Router::redirect("/users/signup/error_blank");         }        
+        }
+        
 
     public function login() {
         
-        $this->template->content = View::instance('v_users_login');
-        echo $this->template;
+        # If user exists, don't allow to use this page
+                if($this->user) {
+                        Router::redirect('/');
+                }        
+                
+                # Setup view
+                $this->template->content = View::instance('v_users_login');
+                $this->template->title = "Log In";
+
+                # Pass data to the view
+                $this->template->content->error = $error;
+
+
+                # Render template
+                echo $this->template;
+        }
         
-    }
 
          /*-------------------------------------------------------------------------------------------------
 Process the login form
 -------------------------------------------------------------------------------------------------*/
     public function p_login() {
                  
+     # If user exists, don't allow to use this page
+                if($this->user) {
+                        Router::redirect('/');
+                }
+                
+                # Sanitize the user entered data to prevent any funny-business (re: SQL Injection Attacks)
+                $_POST = DB::instance(DB_NAME)->sanitize($_POST);
+     
+     
      # Hash the password they entered so we can compare it with the ones in the database
-        $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
+        		$_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
                 
      # Set up the query to see if there's a matching email/password in the DB
-        $q =
+        	$q =
              'SELECT token
               FROM users
               WHERE email = "'.$_POST['email'].'"
@@ -126,10 +205,10 @@ Process the login form
                 
                 $data = Array(
                         "first_name"        => $this->user->first_name,
-                        "last_name"                => $this->user->last_name,
-                        "email"                        => $this->user->email,
-                        "created"                => $this->user->created,
-                        "modified"                => $this->user->modified
+                        "last_name"         => $this->user->last_name,
+                        "email"             => $this->user->email,
+                        "created"           => $this->user->created,
+                        "modified"          => $this->user->modified
                 );
                                 
                 # Pass the data to the View
