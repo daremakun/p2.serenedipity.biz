@@ -19,17 +19,34 @@
     Life is full of complexities and serendipitous events. Share them here!
 </div>
 
-<div id="nav">
-    <h2>Features</h2>
-    <ul>
-      <li><a href="/users/signup">Sign Up</a></li>
-      <li><a href="/users/login">Log In</a> <a href="users/logout">Log out</a></li>
-      <li><a href="/posts/delete_one/-1">Delete a Post</a></li>
-      <a href="posts/">Post something here!</a>
-    </ul>
+<div id='menu'>
+
+        <a href='/'>Home</a>
+
+        <!-- Menu for users who are logged in -->
+        <?php if($user): ?>
+            <li><a href='/posts/add'>Add Post</a></li>
+            <li><a href='/posts/'>View Posts</a></li>
+            <li><a href='/posts/users'>Follow Users</a></li>
+            <li><a href='/users/logout'>Logout</a></li>
+
+        <!-- Menu options for users who are not logged in -->
+        <?php else: ?>
+
+            <li><a href='/users/signup'>Sign Up</a></li>
+            <li><a href='/users/login'>Log In</a></li>
+        <?php endif; ?>
 </div>
-  
-	<?php if(isset($content)) echo $content; ?>
+
+		<?php if($user): ?>
+                You are logged in as <?=$user->first_name?> <?=$user->last_name?><br>
+        <?php endif; ?>
+    <br>
+
+    <?php if(isset($content)) echo $content; ?>
+
+</body>
+
 <div id="sidebar">
     <h2>Account</h2>
     <p class="summary">
@@ -38,7 +55,7 @@
     
 </div>
 <div id="footer">
-    <h2>Two feature</h2>
+    <h2>Plus one features</h2>
     <p>Delete post is +1 feature.</p>
     <p>Edit post</P>
 </div>

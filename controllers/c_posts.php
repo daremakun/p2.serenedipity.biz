@@ -4,85 +4,43 @@ class posts_controller extends base_controller {
 
 	   public function __construct() {
                 
-       # Make sure the base controller construct gets called
-       parent::__construct();
+       		# Make sure the base controller construct gets called
+       		parent::__construct();
+       		
+       		 if(!$this->user) {
+             die("Members only");
         }
         
+        /*-------------------------------------------------------------------------------------------------
+        Display a new post form
+        -------------------------------------------------------------------------------------------------*/
        public function add() {
        
       	 	$this->template->content = View::instance("v_posts_add");
             $this->template->title   = "Add a Post";   
+            
             echo $this->template;
        
        }
-            
+           
+            /*-------------------------------------------------------------------------------------------------
+        Process new posts
+        -------------------------------------------------------------------------------------------------*/ 
         public function p_add() {
-        
-        
     
-        	$_POST['user_id'] = $this->user->user_id;
-            $_POST['created'] = Time::now();
-            $_POST['modified'] = Time::now();
+        		$_POST['user_id'] = $this->user->user_id;
+            	$_POST['created'] = Time::now();
+            	$_POST['modified'] = Time::now();
                 
             DB::instance(DB_NAME)->insert('posts', $_POST);
-                
-                
            
-        }
+            Router::redirect('/posts/');
+                    
+        }    
         
-       public function view($input) {
-                $this->template->content = View::instance("v_posts_view");
-                $this->template->title = "View a Post";
-                
-                // Build the query
-                $q = 'SELECT content, created, user_id, post_id
-                        FROM posts
-                        WHERE post_id = '.$input;
-                
-                // Run the query
-                $post = DB::instance(DB_NAME)->select_row($q);
-
-                $this->template->content->post = $post;
-
-                echo $this->template;
-        }
-                 
-                 
-        public function delete_one($errorMsg) {
-                $this->template->content = View::instance("v_posts_delete_one");
-                $this->template->title = "Delete a Post";
-                $this->template->content->msg = $errorMsg;
-                
-                // Build the query
-                $q = 'SELECT content, created, user_id, post_id
-                        FROM posts
-                        WHERE post_id = '.$errorMsg;
-                
-                // Run the query
-                $post = DB::instance(DB_NAME)->select_row($q);
-
-                // Confirm that the user who posted it is editing it
-                if (($this->user->user_id != $post['user_id']) && ($errorMsg != -1))
-                {
-                        Router::redirect('/posts/delete_one/-1');
-                }
-                
-                $this->template->content->post = $post;
-
-                echo $this->template;
-        }
-        
-        public function p_delete_one() {
-                
-                $ret = DB::instance(DB_NAME)->delete('posts', "WHERE post_id = ".$_POST['post_id']);
-                
-                if ($ret != 1) {
-                        echo "<h2> No posts to delete!</h2>";
-                }
-                else {
-                        Router::redirect('/posts/edit');
-                }         
-        
+        /*-------------------------------------------------------------------------------------------------
+        View all posts
+        -------------------------------------------------------------------------------------------------*/
         public function index() {
                 
                 # Set up view
@@ -90,12 +48,17 @@ class posts_controller extends base_controller {
                 
                 # Set up query
                 $q = 'SELECT
-                         posts.*,
+                         posts.post_id,
+                         posts.content,
+                         posts.created,
+                         posts.user_id AS post_user_id,
+                         users_users.user_id AS follower_id,
                          users.first_name,
                          users.last_name
-                        FROM posts
-                        INNER JOIN users
-                         ON posts.user_id = users.user_id';
+                         FROM posts
+                         INNER JOIN users_users
+                         ON posts.user_id = users_users.user_id_followed
+                         WHERE users_users.user_id = '.$this->user->user_id.' or posts.user_id = '.$this->user->user_id;
                          
                 $posts = DB::instance(DB_NAME)->select_rows($q);
                 
@@ -105,6 +68,9 @@ class posts_controller extends base_controller {
         	
         }
         
+        /*-------------------------------------------------------------------------------------------------
+        
+        -------------------------------------------------------------------------------------------------*/
         public function users() {
                 
                 # Set up view
@@ -124,7 +90,7 @@ class posts_controller extends base_controller {
                 # Run query
                 $connections = DB::instance(DB_NAME)->select_array($q,'user_id_followed');
                 
-                print_r($connections);
+                /*print_r($connections);*/
                 
                 # Pass data to the view
                 $this->template->content->users = $users;
@@ -144,9 +110,10 @@ class posts_controller extends base_controller {
          		$data = Array(
          		"created" => Time::now(),
          		"user_id" => $this->user->user_id,
-         		"user_id_followed" => $user_id_followed
-         );
-        
+         		"user_id_followed" => $user_id_followed);
+         
+        		# Set up the where condition
+         		/*$where_condition = 'WHERE user_id = '.$this->user->user_id.' AND user_id_followed = '.$user_id_followed;*/
          		# Do the insert
          		DB::instance(DB_NAME)->insert('users_users', $data);
         
@@ -171,7 +138,56 @@ class posts_controller extends base_controller {
          		Router::redirect("/posts/users");
         
         }
+      /*------------------------------------------------------------------------------------------
+		delete post
+		*/
+     	public function delete($post_id) {
         
+       			DB::instance(DB_NAME)->delete('posts','WHERE post_id ='.$post_id);
+       
+      			# Send them back to the homepage
+       			Router::redirect('/posts');
+    }        
+    
+	/*---------------------------------------------------------------------------------------------
+	edit post view
+	*/
+
+     public function edit($post_id) {
+        # Set up view
+                $this->template->content = View::instance("v_posts_edit");
+                
+                # Set up query to get all users
+                $q = 'SELECT * FROM posts where post_id = '.$post_id;
+                        
+                # Run query
+                $post = DB::instance(DB_NAME)->select_row($q);
+                
+                
+                
+                # Pass data to the view
+                $this->template->content->post = $post;
+                
+                # Render view
+                echo $this->template;
+
+    }        
+    
+	/*---------------------------------------------------------------------------------------------
+	edit post view
+	*/
+    public function p_edit($post_id) {
+                
+                $content = $_POST['content'];
+                                
+                # Update their row in the DB with the new token
+        		$data = Array(
+                'content' => $content);
+        
+                DB::instance(DB_NAME)->update('posts',$data, 'WHERE post_id ='.$post_id);                
+                Router::redirect('/posts/');
+                
+        }          
     }
     
     
