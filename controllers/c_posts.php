@@ -144,13 +144,12 @@ class posts_controller extends base_controller {
                         *
                         FROM posts
                         WHERE post_id = '.$post_id;
-                $post = DB::instance(DB_NAME)->select_row($q);
-                $poster_id = $post['user_id'];
-                if ($this->user->user_id == $poster_id) {
-                        #delete the post when post id match is found
+                		$post = DB::instance(DB_NAME)->select_row($q);
+                		$poster_id = $post['user_id'];
+                		if ($this->user->user_id == $poster_id) {
+                        
                         DB::instance(DB_NAME)->delete('posts','WHERE post_id ='.$post_id);
                         
-                        #Then send user back to view posts
                         Router::redirect('/posts');
                 }
                 else {

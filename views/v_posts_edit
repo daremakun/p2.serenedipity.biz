@@ -2,7 +2,7 @@
 
     <textarea rows="5" cols="100" name='content'><?=$post['content']?></textarea>
 	<br />
-<input type='Submit' value='Edit Sqeak' required>
+<input type='Submit' value='Edit post' required>
 
 </form>
 

@@ -2,13 +2,13 @@
 
 class users_controller extends base_controller {
 
-                            public function __construct() {
-                        	parent::__construct();
+                public function __construct() {
+                parent::__construct();
  
     	}
 
-                            public function index() {
-                         	Router::redirect('/');
+                public function index() {
+                Router::redirect('/');
     	}
 
 /*-------------------------------------------------------------------------------------------------
@@ -42,12 +42,12 @@ Process the sign up form
                 }
                 
                  else {
-            Router::redirect("/users/signup/error");
+            	 Router::redirect("/users/signup/error");
            }
         
-         echo"<pre>";
-         #        print_r($_POST);
-              echo "You have successfully signed up";
+         		echo"<pre>";
+         		#  print_r($_POST);
+              	 echo "You have successfully signed up";
                  echo"<pre>";
     }
 
@@ -55,14 +55,14 @@ Process the sign up form
 
     public function login($error = NULL) {
 
-    		# Set up the view
-    		$this->template->content = View::instance("v_users_login");
+    			# Set up the view
+    			$this->template->content = View::instance("v_users_login");
 
-    		# Pass data to the view
-    		$this->template->content->error = $error;
+    			# Pass data to the view
+    			$this->template->content->error = $error;
 
-    		# Render the view
-    		echo $this->template;
+    			# Render the view
+    			echo $this->template;
 
 	}
 
@@ -72,7 +72,7 @@ Process the login form
 -------------------------------------------------------------------------------------------------*/
    public function p_login(){
                 # This will hash the password entered so it can be compared with the one in the database.
-        $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
+        		$_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
 
                 # Set up the query to find matching email/password in the DB
                 $q =
@@ -92,34 +92,32 @@ Process the login form
                 }
                 #Fail
                 else{
-             Router::redirect("/users/login/error");
-                        }
+             	Router::redirect("/users/login/error");
+                }
                         
-                #echo"<pre>";
-                #print_r($_POST);
-                #echo"<pre>";
+    
     }
            
 
 
     public function logout() {
        
-                               # Generate a new token they'll use next time they login
-                               $new_token = sha1(TOKEN_SALT.$this->user->email.Utils::generate_random_string());
+                # Generate a new token they'll use next time they login
+                $new_token = sha1(TOKEN_SALT.$this->user->email.Utils::generate_random_string());
        
-                               # Update their row in the DB with the new token
-                               $data = Array(
-               					'token' => $new_token
+                # Update their row in the DB with the new token
+                $data = Array(
+               	'token' => $new_token
        );
-                               DB::instance(DB_NAME)->update('users',$data, 'WHERE user_id ='. $this->user->user_id);
+                DB::instance(DB_NAME)->update('users',$data, 'WHERE user_id ='. $this->user->user_id);
        
-                               # Delete their old token cookie by expiring it
-                               setcookie('token', '', strtotime('-1 year'), '/');
+                # Delete their old token cookie by expiring it
+                setcookie('token', '', strtotime('-1 year'), '/');
        
-                              echo "You have logged out successfully.";
-        						#Router::redirect('/');
-         					   	echo "<br>";
-        					die('To log back in click <a href="/users/login">here.</a>');
+                echo "You have logged out successfully.";
+        		#Router::redirect('/');
+         		echo "<br>";
+        		die('To log back in click <a href="/users/login">here.</a>');
     }
 
         /*-------------------------------------------------------------------------------------------------

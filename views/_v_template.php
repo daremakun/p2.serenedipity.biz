@@ -43,8 +43,7 @@
 	
 	<div id="footer">
     		<h4>Plus one features</h4>
-    		<p>Delete post is +1 feature.</p>
-    		<p>Edit post</P>
+    		<p>Delete post | Edit post</p>	
 	</div>
 	<?php if(isset($client_files_body)) echo $client_files_body; ?>
 </div>

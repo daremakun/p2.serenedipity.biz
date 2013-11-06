@@ -2,22 +2,24 @@
 {
 	margin: 0 auto;
 	width: 600px;
-	background:#fff;
+	background : top center no-repeat #999F;
 }
 
 #header
 {
-	background:#ccc;
+	background:#FAF5E6;
 	padding: 20px;
 }
 
-#header h1 { margin: 0; }
+#header h1 { margin: 0; 
+border-radius : 20px;
+border : #FF2B6B solid 1px;}
 
 #navigation
 {
 	float: left;
 	width: 600px;
-	background:#333;
+	background:#930;
 }
 
 #navigation ul
@@ -30,6 +32,7 @@
 {
 	list-style-type: none;
 	display: inline;
+	
 }
 
 #navigation li a
@@ -42,12 +45,16 @@
 	border-right: 1px solid#fff;
 }
 
-#navigation li a:hover { background:#383; }
+#navigation li a:hover { background:#CC9900; }
 
 #content
 {
 	clear: left;
 	padding: 20px;
+	background-color: #FAF5E6;
+	border-radius: 5px;
+	padding-left: 0.5em;
+	box-shadow: 2px 3px 2px 3px #888;
 }
 
 #content h2
@@ -59,11 +66,15 @@
 
 #footer
 {
-	background:#ccc;
-	text-align: right;
-	padding: 20px;
-	height: 1%;
+	color : #777;
+	margin : 0 18px 0 28px;
+	padding-top : 1em;
+	border-top : 1px solid #CCC;
 }
 
-
+#cssmenu h3
+{
+background-color: #CC9900;
+border-radius: 5px;
+}
 
