@@ -1,42 +1,11 @@
-body {
-    font-family: calibri,verdana,tahoma,arial,helvetica,sans-serif;
-    margin: 0px 5%;
-    background-color: #ccc;
-    color: #000;
+#serene {
+    font-family : Arial, Helvetica, sans-serif;
+	line-height : 18px;
+	font-size : 13.5px;		color : #06185c;
+	background : top center no-repeat #333366;
+	margin : auto;
+	padding : 5px 10px;
 }
-h1, h2, h3, h4, h5, h6 { color: #666666; background-color: #999999; }
-ul { background-color: #c1c1c1; }
-p {
-    color: #666666;
-    background-color: #1c1c1c;
-    padding: 0.5em;
-}
-#header { width: 100%; }
-#footer { width: 100%; clear: both;}
-#nav { width: 15%; float: left; padding-right: 10px;}
-#sidebar { width: 33%; float: right; }
-#main { width: 50%; float: left; 
-}
-div p {
-    background-color: #d8d8d8;
-    color: #666666;
-}
-.summary {
-    border: #000;
-    color: #d8d8d8;
-    background-color: #666666;
-}
-#sidebar p {
-    background-color: #d8d8d8;
-    color: #666666;
-}
-#footer {
-    background-color: #fff;
-    color: #ccc;
-    font-size: small;
-    text-align: center;
-}
-h2 { display: none; }
-#main h2 {display: block;
-}
+
+
 

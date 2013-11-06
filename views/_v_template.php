@@ -6,35 +6,34 @@
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	
 	
 	 <link rel="stylesheet" href="/css/styles.css">	
-	 <link rel="stylesheet" href="/css/blueprint/screen.css">
+
+	 <link href="/menu_assets/styles.css" rel="stylesheet" type="text/css">
 	 				
 	<!-- Controller Specific JS/CSS -->
 	<?php if(isset($client_files_head)) echo $client_files_head; ?>
 	
 </head>
 
-<body>	
+<body id="serene">	
+
 <div id="header">
-	<h1>Serenedipity</h1><br>
+	<h2><a href='/'>Serenedipity</a></h2><br>
     Life is full of complexities and serendipitous events. Share them here!
 </div>
 
-<div id='menu'>
-
-        <a href='/'>Home</a>
-
+<div id='cssmenu'>
         <!-- Menu for users who are logged in -->
         <?php if($user): ?>
-            <li><a href='/posts/add'>Add Post</a></li>
-            <li><a href='/posts/'>View Posts</a></li>
-            <li><a href='/posts/users'>Follow Users</a></li>
-            <li><a href='/users/logout'>Logout</a></li>
-
+        <ul>	
+   			<li class='active '><a href='/'><span>Home</span></a></li>
+   			<li><a href='/posts/add'><span>Add Posts</span></a></li>
+   			<li><a href='/posts/'><span>View Posts</span></a></li>
+   			<li><a href='/posts/users'><span>Follow Users</span></a></li>
+   			<li><a href='/users/logout'><span>Log Out</span></a></li>
         <!-- Menu options for users who are not logged in -->
-        <?php else: ?>
-
-            <li><a href='/users/signup'>Sign Up</a></li>
-            <li><a href='/users/login'>Log In</a></li>
+   			<li><a href='/users/signup'><span>Sign Up</span></a></li>
+   			<li><a href='/users/login'><span>Log In</span></a></li>
+   		</ul>
         <?php endif; ?>
 </div>
 
@@ -47,15 +46,11 @@
 
 </body>
 
-<div id="sidebar">
-    <h2>Account</h2>
-    <p class="summary">
-        Welcome to my app! Please <a href='/users/signup'> Create an account </a>or <a href='/users/login'>Login</a>.
-    </p>
+<div id="sidebar"> 
     
 </div>
 <div id="footer">
-    <h2>Plus one features</h2>
+    <h4>Plus one features</h4>
     <p>Delete post is +1 feature.</p>
     <p>Edit post</P>
 </div>
