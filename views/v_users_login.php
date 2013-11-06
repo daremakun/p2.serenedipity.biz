@@ -1,5 +1,4 @@
 <h2>Log In</h2>
-
 <form method='POST' action='/users/p_login'>
 
     Email<br>

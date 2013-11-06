@@ -5,23 +5,20 @@
 
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />	
 	
-	 <link rel="stylesheet" href="/css/styles.css">	
-
-	 <link href="/menu_assets/styles.css" rel="stylesheet" type="text/css">
+	 <link rel="stylesheet" href="/css/style.css">	
 	 				
 	<!-- Controller Specific JS/CSS -->
 	<?php if(isset($client_files_head)) echo $client_files_head; ?>
 	
 </head>
 
-<body id="serene">	
+<div id="container">
 
-<div id="header">
-	<h2><a href='/'>Serenedipity</a></h2><br>
-    Life is full of complexities and serendipitous events. Share them here!
-</div>
+		<div id="header">
+			<h2><a href='/'>Serenedipity</a></h2><br>	
+		</div>
 
-<div id='cssmenu'>
+	<div id="navigation">
         <!-- Menu for users who are logged in -->
         <?php if($user): ?>
         <ul>	
@@ -35,25 +32,18 @@
    			<li><a href='/users/login'><span>Log In</span></a></li>
    		</ul>
         <?php endif; ?>
-</div>
-
-		<?php if($user): ?>
-                You are logged in as <?=$user->first_name?> <?=$user->last_name?><br>
-        <?php endif; ?>
-    <br>
-
+	</div>
+	<div id="content"> 
+		<h3> About </h3>
+			<p>Life is full of complexities and serendipitous events. Share them here!</p>
     <?php if(isset($content)) echo $content; ?>
-
-</body>
-
-<div id="sidebar"> 
-    
-</div>
-<div id="footer">
-    <h4>Plus one features</h4>
-    <p>Delete post is +1 feature.</p>
-    <p>Edit post</P>
-</div>
+	</div>
+	
+	<div id="footer">
+    		<h4>Plus one features</h4>
+    		<p>Delete post is +1 feature.</p>
+    		<p>Edit post</P>
+	</div>
 	<?php if(isset($client_files_body)) echo $client_files_body; ?>
-</body>
+</div>
 </html>
