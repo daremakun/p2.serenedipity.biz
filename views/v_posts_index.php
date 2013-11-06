@@ -2,7 +2,7 @@
 
 <article>
 
-    <h2><?=$post['first_name']?> <?=$post['last_name']?> posted:</h2>
+    <h1><?=$post['first_name']?> <?=$post['last_name']?> posted:</h1>
 
     <p><?=$post['content']?></p>
 
@@ -25,5 +25,4 @@
 </article>
 
 <?php endforeach; ?>
-
 

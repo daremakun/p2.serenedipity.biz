@@ -18,6 +18,8 @@ Display a form so users can sign up
     public function signup() {
                 
                  $this->template->content = View::instance('v_users_signup');
+                 
+                 $this->template->content->error = $error; 
         
                 echo $this->template;
         }
@@ -25,26 +27,31 @@ Display a form so users can sign up
 Process the sign up form
 -------------------------------------------------------------------------------------------------*/
     
-   public function p_signup() {
-         # Dump out the results of POST to see what the form submitted
-         // print_r($_POST);
+    public function p_signup(){
         
                 $_POST['created'] = Time::now();
-                $_POST['modified'] = Time::now();
-                
                 $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
-                # Create an encrypted token via their email address and a random string
-                $_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());
+            $_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string());
+                #checks for duplicate email.
+                $email_unique = $this->userObj->confirm_unique_email($_POST["email"]);
+                
+                if($email_unique) {
+                 DB::instance(DB_NAME)->insert_row('users', $_POST);
+                 #Send them to the login page
+                 Router::redirect('/users/login');
+                }
+                
+                 else {
+            Router::redirect("/users/signup/error");
+           }
         
-                         # Insert this user into the database
-                         $user_id = DB::instance(DB_NAME)->insert('users', $_POST);
-        
-        
-                         //echo 'You\'re signed up';
-        
-                         Router::redirect('/users/login');
-        
+         echo"<pre>";
+         #        print_r($_POST);
+              echo "You have successfully signed up";
+                 echo"<pre>";
     }
+
+
 
     public function login($error = NULL) {
 
@@ -63,22 +70,35 @@ Process the sign up form
          /*-------------------------------------------------------------------------------------------------
 Process the login form
 -------------------------------------------------------------------------------------------------*/
-   public function p_login() {
+   public function p_login(){
+                # This will hash the password entered so it can be compared with the one in the database.
+        $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);
 
-    		# [...irrelevant code redacted...]
+                # Set up the query to find matching email/password in the DB
+                $q =
+                 'SELECT token
+                         FROM users
+                         WHERE email = "'.$_POST['email'].'"
+                         AND password ="'.$_POST['password'].'"';
+                
+                $token = DB::instance(DB_NAME)->select_field($q);
 
-    		# Login failed
-    		if(!$token) {
-        	# Note the addition of the parameter "error"
-        	Router::redirect("/users/login/error"); 
+                #Successful
+                if($token){
+                        setcookie('token',$token,strtotime('+1 year'), '/');
+                         #Send user to the homepage
+                 Router::redirect('/');
+                 echo "Success. You are logged in!";                
+                }
+                #Fail
+                else{
+             Router::redirect("/users/login/error");
+                        }
+                        
+                #echo"<pre>";
+                #print_r($_POST);
+                #echo"<pre>";
     }
-    		# Login passed
-    		else {
-    		setcookie("token", $token, strtotime('+2 weeks'), '/');
-        	Router::redirect("/");
-    }
-
-}
            
 
 
@@ -89,15 +109,17 @@ Process the login form
        
                                # Update their row in the DB with the new token
                                $data = Array(
-               'token' => $new_token
+               					'token' => $new_token
        );
                                DB::instance(DB_NAME)->update('users',$data, 'WHERE user_id ='. $this->user->user_id);
        
                                # Delete their old token cookie by expiring it
                                setcookie('token', '', strtotime('-1 year'), '/');
        
-                               # Send them back to the homepage
-                               Router::redirect('/');
+                              echo "You have logged out successfully.";
+        						#Router::redirect('/');
+         					   	echo "<br>";
+        					die('To log back in click <a href="/users/login">here.</a>');
     }
 
         /*-------------------------------------------------------------------------------------------------

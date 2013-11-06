@@ -1,4 +1,3 @@
-<h2>Follow Users Posts</h2>
 <?php foreach($users as $user): ?>
 
     <!-- Print this user's name -->

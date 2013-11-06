@@ -28,13 +28,15 @@
    			<li><a href='/posts/users'><span>Follow Users</span></a></li>
    			<li><a href='/users/logout'><span>Log Out</span></a></li>
         <!-- Menu options for users who are not logged in -->
-   			<li><a href='/users/signup'><span>Sign Up</span></a></li>
-   			<li><a href='/users/login'><span>Log In</span></a></li>
+        <?php else: ?>
+        
+        	<li><a href='/users/signup'><span>Sign Up</span></a></li>
+   			<li><a href='/users/login'><span>Log In</span></a></li>		
    		</ul>
         <?php endif; ?>
 	</div>
 	<div id="content"> 
-		<h3> About </h3>
+		<h3>  </h3>
 			<p>Life is full of complexities and serendipitous events. Share them here!</p>
     <?php if(isset($content)) echo $content; ?>
 	</div>
